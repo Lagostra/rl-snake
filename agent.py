@@ -25,6 +25,8 @@ class DQN:
         self.memory = deque(maxlen=2500)
         self.model = self.build_model()
 
+        self.alpha = 0.5
+
     def save_model(self, id, name):
         self.model.save(f'./models/{id}/{name}')
 
@@ -37,7 +39,7 @@ class DQN:
     def build_model(self):
         l = tf.keras.layers
         model = Sequential([
-            l.Dense(64, input_shape=self.state_space),
+            l.Dense(64, input_shape=(self.state_space,)),
             l.Activation("relu"),
             l.Dense(32),
             l.Activation("relu"),
@@ -49,7 +51,7 @@ class DQN:
 
     def get_action(self, state):
         if random.random() < self.epsilon:
-            return random.randint(0, self.action_space)
+            return random.randint(0, self.action_space - 1)
 
         preds = self.model.predict_on_batch(state)
         return np.argmax(preds)
@@ -74,8 +76,28 @@ class DQN:
         # Do NOT use much time on this. Ask if you're stuck.
         # The implementation in python can be harder than actually understanding the equation.
         # Find the eqation in the README
+        q_current = self.model.predict_on_batch(states)
+        q_next = self.model.predict_on_batch(next_states)
 
-        self.model.fit(states, None, epochs=1, verbose=0)
+        max_future_q = rewards + self.gamma * np.amax(q_next, axis=1)
+        ind = np.arange(0, self.batch_size)
+
+        q_current[[ind], [actions]] = (1 - self.learning_rate) * q_current[[ind], [actions]] + self.learning_rate * max_future_q
+
+        '''
+        best_future_qs = np.max(q2, axis=1)
+        cur = (1 - self.alpha) * q1[:, [actions]]
+        q_delta = (cur + self.alpha * (rewards + self.gamma * best_future_qs)) * self.one_hot(actions)
+        q = q1 + q_delta
+        '''
+
+        self.model.fit(states, q_current, epochs=1, verbose=0)
+
+
+    def one_hot(self, values):
+        n_values = np.max(values) + 1
+        return np.eye(n_values)[values]
+
 
     def update_exploration_strategy(self, episode):
         self.epsilon *= 1 - self.epsilon_decay
