@@ -1,5 +1,6 @@
 import random
 import numpy as np
+import tensorflow as tf
 from tensorflow.keras import Sequential
 from tensorflow.keras.layers import Dense
 from tensorflow.keras.optimizers import Adam
@@ -35,7 +36,15 @@ class DQN:
 
     def build_model(self):
         # TODO: Create model, remember to compile
-        model = Sequential()
+        l = tf.keras.layers
+        model = Sequential([
+            l.Dense(64, input_shape=self.state_space),
+            l.Activation("relu"),
+            l.Dense(32),
+            l.Activation("relu"),
+            l.Dense(self.action_space)
+        ])
+
         model.compile(loss='mse', optimizer=Adam(lr=0.00025))
         return model
 
