@@ -173,8 +173,8 @@ class Snake(gym.Env):
     def add_to_body(self):
         body = turtle.Turtle()
         body.speed(0)
-        body.shape('square')
-        body.color('black')
+        body.shape(SNAKE_SHAPE)
+        body.color(SNAKE_COLOR)
         body.penup()
         self.snake_body.append(body)
 
