@@ -35,7 +35,6 @@ class DQN:
         self.memory.append((state, action, reward, next_state, done))
 
     def build_model(self):
-        # TODO: Create model, remember to compile
         l = tf.keras.layers
         model = Sequential([
             l.Dense(64, input_shape=self.state_space),
@@ -49,8 +48,11 @@ class DQN:
         return model
 
     def get_action(self, state):
-        # TODO: With episilon probablity choose random action vs best action
-        return 0
+        if random.random() < self.epsilon:
+            return random.randint(0, self.action_space)
+
+        preds = self.model.predict_on_batch(state)
+        return np.argmax(preds)
 
     def train_with_experience_replay(self):
         if len(self.memory) < self.batch_size:
@@ -76,5 +78,4 @@ class DQN:
         self.model.fit(states, None, epochs=1, verbose=0)
 
     def update_exploration_strategy(self, episode):
-        # TODO: Reduce epsilon
-        self.epsilon = self.epsilon
+        self.epsilon *= 1 - self.epsilon_decay
