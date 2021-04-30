@@ -93,11 +93,9 @@ class DQN:
 
         self.model.fit(states, q_current, epochs=1, verbose=0)
 
-
     def one_hot(self, values):
         n_values = np.max(values) + 1
         return np.eye(n_values)[values]
 
-
     def update_exploration_strategy(self, episode):
-        self.epsilon *= 1 - self.epsilon_decay
+        self.epsilon *= (1 - self.epsilon_decay)

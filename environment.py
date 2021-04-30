@@ -15,15 +15,16 @@ PIXEL_W = 20*WIDTH   # pixel width + border on both sides
 SLEEP = 0.2     # time to wait between steps
 
 GAME_TITLE = 'Snake'
-BG_COLOR = 'white'
+BG_COLOR = 'black'
+TEXT_COLOR = 'lime green'
 
 SNAKE_SHAPE = 'square'
-SNAKE_COLOR = 'black'
+SNAKE_COLOR = 'lime green'
 SNAKE_START_LOC_H = 0
 SNAKE_START_LOC_V = 0
 
-APPLE_SHAPE = 'circle'
-APPLE_COLOR = 'green'
+APPLE_SHAPE = 'square'
+APPLE_COLOR = 'red'
 
 
 class Snake(gym.Env):
@@ -75,7 +76,7 @@ class Snake(gym.Env):
         # score
         self.score = turtle.Turtle()
         self.score.speed(0)
-        self.score.color('black')
+        self.score.color(TEXT_COLOR)
         self.score.penup()
         self.score.hideturtle()
         self.score.goto(0, 100)
@@ -116,6 +117,15 @@ class Snake(gym.Env):
         if self.snake.direction == 'left':
             x = self.snake.xcor()
             self.snake.setx(x - 20)
+
+    def get_snake_direction_code(self):
+        return {
+            'stop': 0,
+            'up': 1,
+            'right': 2,
+            'down': 3,
+            'left': 4
+        }[self.snake.direction]
 
     def go_up(self):
         if self.snake.direction != "down":
@@ -240,20 +250,20 @@ class Snake(gym.Env):
         self.move_snake()
 
         if self.move_apple():  # Fetched apple
-            self.reward = 10
+            self.reward = 100
             reward_given = True
         self.move_snakebody()
         self.measure_distance_to_apple()
 
         if self.body_check_snake():  # Body collision
-            self.reward = -100
+            self.reward = -50
             reward_given = True
             self.done = True
             if self.human:
                 self.reset()
 
         if self.wall_check():  # Wall collission
-            self.reward = -100
+            self.reward = -50
             reward_given = True
             self.done = True
             if self.human:
@@ -261,7 +271,7 @@ class Snake(gym.Env):
 
         if not reward_given:  # Check if distance to apple increased or decreased
             if self.distance_to_apple < self.prev_distance_to_apple:
-                self.reward = 1
+                self.reward = 40
             else:
                 self.reward = -1
 
@@ -326,7 +336,23 @@ class Snake(gym.Env):
         else:
             body_left = 0
 
+        '''
         state = [
+            int(wall_up or body_up),  # obstacle_up
+            int(wall_right or body_right),  # obstacle_right
+            int(wall_down or body_down),  # obstacle_down
+            int(wall_left or body_left),  # obstacle_left
+        ]
+        '''
+
+        state = [
+            self.snake.xsc,
+            self.snake.ysc,
+            #self.apple.xsc,
+            #self.apple.ysc,
+            self.get_snake_direction_code(),
+            self.snake.xsc - self.apple.xsc,
+            self.snake.ysc - self.apple.ysc,
             int(wall_up or body_up),  # obstacle_up
             int(wall_right or body_right),  # obstacle_right
             int(wall_down or body_down),  # obstacle_down
