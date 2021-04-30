@@ -39,9 +39,9 @@ class DQN:
     def build_model(self):
         l = tf.keras.layers
         model = Sequential([
-            l.Dense(64, input_shape=(self.state_space,)),
+            l.Dense(32, input_shape=(self.state_space,)),
             l.Activation("relu"),
-            l.Dense(32),
+            l.Dense(16),
             l.Activation("relu"),
             l.Dense(self.action_space)
         ])
