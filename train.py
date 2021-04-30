@@ -20,6 +20,7 @@ def train_dqn(episodes, env):
     best_score = 0
     for episode in range(episodes):
         state = env.reset()  # Reset enviroment before each episode to start fresh
+        env.update_episode(episode + 1)
         state = np.reshape(state, (1, env.state_space))
         total_reward = 0
         max_steps = 10000

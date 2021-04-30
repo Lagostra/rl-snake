@@ -83,6 +83,14 @@ class Snake(gym.Env):
         self.score.write(f"Total: {self.total}   Highest: {self.maximum}",
                          align='center', font=('Courier', 18, 'normal'))
 
+        self.episode_text = turtle.Turtle()
+        self.episode_text.speed(0)
+        self.episode_text.color(TEXT_COLOR)
+        self.episode_text.penup()
+        self.episode_text.hideturtle()
+        self.episode_text.goto(-200, 190)
+        self.episode_text.write(f"Episode: 1", align='left', font=('Courier', 18, 'normal'))
+
         # control
         self.screen.listen()
         self.screen.onkey(self.go_up, 'Up')
@@ -163,6 +171,10 @@ class Snake(gym.Env):
         self.score.clear()
         self.score.write(f"Total: {self.total}   Highest: {self.maximum}",
                          align='center', font=('Courier', 18, 'normal'))
+
+    def update_episode(self, episode):
+        self.episode_text.clear()
+        self.episode_text.write(f"Episode: {episode}", align='left', font=('Courier', 18, 'normal'))
 
     def reset_score(self):
         self.score.clear()
