@@ -21,7 +21,7 @@ def train_dqn(episodes, env):
     for episode in range(episodes):
         state = env.reset()  # Reset enviroment before each episode to start fresh
         env.update_episode(episode + 1)
-        state = np.reshape(state, (1, env.state_space))
+        # state = np.reshape(state, (1, env.state_space))
         total_reward = 0
         max_steps = 10000
         for step in range(max_steps):
@@ -31,7 +31,7 @@ def train_dqn(episodes, env):
             # 2. perform action in enviroment
             next_state, reward, done, _ = env.step(action)
             total_reward += reward
-            next_state = np.reshape(next_state, (1, env.state_space))
+            # next_state = np.reshape(next_state, (1, env.state_space))
 
             # 3. Update the Q-function (train model)
             agent.remember(state, action, reward, next_state, done)

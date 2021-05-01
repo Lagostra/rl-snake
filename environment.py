@@ -291,25 +291,40 @@ class Snake(gym.Env):
             time.sleep(SLEEP)
             state = self.get_state()
 
-    # TODO: Edit the state space. What is the agent allowed to observe?
-    def get_state(self):
+    def to_coord(self, position):
+        return max(0, min(20, int(position / WIDTH) + 10))
+
+    def get_2d_gameworld(self):
+        snake_x = self.to_coord(self.snake.xcor())
+        snake_y = self.to_coord(self.snake.ycor())
+        map = [[0 for x in range(21)] for y in range(21)]
+        map[snake_y][snake_x] = 1
+        for b in self.snake_body:
+            body_x, body_y = self.to_coord(b.xcor()), self.to_coord(b.ycor())
+            map[body_y][body_x] = 2
+        apple_x, apple_y = self.to_coord(self.apple.xcor()), self.to_coord(self.apple.ycor())
+        map[apple_y][apple_x] = 3
+
+        return map
+
+    def get_heuristic_state(self):
         # snake coordinates abs
-        self.snake.x, self.snake.y = self.snake.xcor()/WIDTH, self.snake.ycor()/HEIGHT
+        self.snake.x, self.snake.y = self.snake.xcor() / WIDTH, self.snake.ycor() / HEIGHT
         # snake coordinates scaled 0-1
-        self.snake.xsc, self.snake.ysc = self.snake.x/WIDTH+0.5, self.snake.y/HEIGHT+0.5
+        self.snake.xsc, self.snake.ysc = self.snake.x / WIDTH + 0.5, self.snake.y / HEIGHT + 0.5
         # apple coordintes scaled 0-1
-        self.apple.xsc, self.apple.ysc = self.apple.x/WIDTH+0.5, self.apple.y/HEIGHT+0.5
+        self.apple.xsc, self.apple.ysc = self.apple.x / WIDTH + 0.5, self.apple.y / HEIGHT + 0.5
 
         # wall check
-        if self.snake.y >= HEIGHT/2:
+        if self.snake.y >= HEIGHT / 2:
             wall_up, wall_down = 1, 0
-        elif self.snake.y <= -HEIGHT/2:
+        elif self.snake.y <= -HEIGHT / 2:
             wall_up, wall_down = 0, 1
         else:
             wall_up, wall_down = 0, 0
-        if self.snake.x >= WIDTH/2:
+        if self.snake.x >= WIDTH / 2:
             wall_right, wall_left = 1, 0
-        elif self.snake.x <= -WIDTH/2:
+        elif self.snake.x <= -WIDTH / 2:
             wall_right, wall_left = 0, 1
         else:
             wall_right, wall_left = 0, 0
@@ -360,8 +375,8 @@ class Snake(gym.Env):
         state = [
             self.snake.xsc,
             self.snake.ysc,
-            #self.apple.xsc,
-            #self.apple.ysc,
+            # self.apple.xsc,
+            # self.apple.ysc,
             self.get_snake_direction_code(),
             self.snake.xsc - self.apple.xsc,
             self.snake.ysc - self.apple.ysc,
@@ -371,3 +386,7 @@ class Snake(gym.Env):
             int(wall_left or body_left),  # obstacle_left
         ]
         return state
+
+    # TODO: Edit the state space. What is the agent allowed to observe?
+    def get_state(self):
+        return self.get_2d_gameworld()

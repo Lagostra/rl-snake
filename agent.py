@@ -39,10 +39,14 @@ class DQN:
     def build_model(self):
         l = tf.keras.layers
         model = Sequential([
-            l.Dense(32, input_shape=(self.state_space,)),
+            l.Reshape((21, 21, 1), input_shape=(21, 21)),
+            l.Conv2D(32, 3),
             l.Activation("relu"),
-            l.Dense(16),
+            l.MaxPool2D(),
+            l.Conv2D(16, 3),
             l.Activation("relu"),
+            l.MaxPool2D(),
+            l.Flatten(),
             l.Dense(self.action_space)
         ])
 
@@ -53,7 +57,7 @@ class DQN:
         if random.random() < self.epsilon:
             return random.randint(0, self.action_space - 1)
 
-        preds = self.model.predict_on_batch(state)
+        preds = self.model.predict_on_batch(np.array([state]))
         return np.argmax(preds)
 
     def train_with_experience_replay(self):
