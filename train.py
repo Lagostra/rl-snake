@@ -60,7 +60,7 @@ if __name__ == '__main__':
     params['epsilon'] = 1
     params['epsilon_min'] = 0.01
     params['epsilon_max'] = 1
-    params['epsilon_decay'] = 0.01
+    params['epsilon_decay'] = 0.05
     params['learning_rate'] = 0.7
 
     results = dict()

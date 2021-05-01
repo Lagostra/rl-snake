@@ -102,4 +102,4 @@ class DQN:
         return np.eye(n_values)[values]
 
     def update_exploration_strategy(self, episode):
-        self.epsilon *= (1 - self.epsilon_decay)
+        self.epsilon = self.epsilon_max * (1 - self.epsilon_decay) ** episode
