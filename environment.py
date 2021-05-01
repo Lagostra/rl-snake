@@ -297,13 +297,13 @@ class Snake(gym.Env):
     def get_2d_gameworld(self):
         snake_x = self.to_coord(self.snake.xcor())
         snake_y = self.to_coord(self.snake.ycor())
-        map = [[0 for x in range(21)] for y in range(21)]
-        map[snake_y][snake_x] = 1
+        map = [[[0 for _ in range(3)] for _ in range(21)] for _ in range(21)]
+        map[snake_y][snake_x][0] = 1
         for b in self.snake_body:
             body_x, body_y = self.to_coord(b.xcor()), self.to_coord(b.ycor())
-            map[body_y][body_x] = 2
+            map[body_y][body_x][1] = 1
         apple_x, apple_y = self.to_coord(self.apple.xcor()), self.to_coord(self.apple.ycor())
-        map[apple_y][apple_x] = 3
+        map[apple_y][apple_x][2] = 1
 
         return map
 

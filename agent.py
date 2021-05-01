@@ -39,7 +39,7 @@ class DQN:
     def build_model(self):
         l = tf.keras.layers
         model = Sequential([
-            l.Reshape((21, 21, 1), input_shape=(21, 21)),
+            l.Reshape((21, 21, 3), input_shape=(21, 21, 3)),
             l.Conv2D(32, 3),
             l.Activation("relu"),
             l.MaxPool2D(),
