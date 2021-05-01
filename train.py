@@ -1,4 +1,5 @@
 from environment import Snake
+from headless_environment import HeadlessSnake
 from agent import DQN
 
 import numpy as np
@@ -42,7 +43,8 @@ def train_dqn(episodes, env):
             state = next_state
 
             if done:
-                print(f'episode: {episode+1}/{episodes}, score: {total_reward}, steps: {step}, epsilon: {agent.epsilon}')
+                print(f'episode: {episode+1}/{episodes}, score: {total_reward}, steps: {step}, '
+                      f'epsilon: {agent.epsilon}, highscore: {env.maximum}')
                 save_model(id, agent, best_score, total_reward)
                 break
 
@@ -66,7 +68,7 @@ if __name__ == '__main__':
     results = dict()
     episodes = 500
 
-    env = Snake()
+    env = HeadlessSnake()
     sum_of_rewards = train_dqn(episodes, env)
     results[params['name']] = sum_of_rewards
 
