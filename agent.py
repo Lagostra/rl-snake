@@ -47,6 +47,8 @@ class DQN:
             l.Activation("relu"),
             l.MaxPool2D(),
             l.Flatten(),
+            l.Dense(128),
+            l.Activation("relu"),
             l.Dense(self.action_space)
         ])
 

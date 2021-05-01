@@ -26,6 +26,9 @@ class HeadlessSnake(gym.Env):
     def __init__(self):
         super(HeadlessSnake, self).__init__()
 
+        self.width = WIDTH
+        self.height = HEIGHT
+
         self.done = False
         self.seed()
         self.reward = 0
@@ -149,6 +152,7 @@ class HeadlessSnake(gym.Env):
     def reset(self):
         self.snake_body = []
         self.snake_head.x, self.snake_head.y = SNAKE_START_LOC_X, SNAKE_START_LOC_Y
+        self.add_to_body()
         self.snake_head.direction = -1
         self.reward = 0
         self.total = 0
